@@ -26,7 +26,8 @@
                 android:hint="@string/prompt_username"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="Soren8D" />
 
             <EditText
                 android:id="@+id/password"
@@ -37,7 +38,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text="tresor269" />
 
             <Button
                 android:id="@+id/email_sign_in_button"

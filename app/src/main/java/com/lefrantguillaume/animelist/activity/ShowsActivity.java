@@ -26,7 +26,6 @@ public class ShowsActivity extends Activity implements MeteorCallback {
     private String subscriptionId;
     private ListView mListView;
     private ShowAdapter adapter;
-    private HashMap<String, ShowItem> showList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +33,8 @@ public class ShowsActivity extends Activity implements MeteorCallback {
 
         setContentView(R.layout.activity_shows);
 
-        showList = new HashMap<>();
         mListView = (ListView) findViewById(R.id.listview);
-        adapter = new ShowAdapter(getApplicationContext(), showList);
+        adapter = new ShowAdapter(getApplicationContext());
 
         mListView.setAdapter(adapter);
 
@@ -80,22 +78,14 @@ public class ShowsActivity extends Activity implements MeteorCallback {
                     obj.getInt("season"),
                     obj.getInt("episode"),
                     obj.getString("owner"),
-                    obj.getString("pic"),
+                    "http://animelist.lefrantguillaume.com" + obj.getString("pic"),
                     obj.getString("link"),
                     new Date(),
                     new Date()
             );
 
             Log.i("SHOW", showItem.toString());
-            this.showList.put(_id, showItem);
-
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-
+            adapter.addItem(_id, showItem);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -110,13 +100,6 @@ public class ShowsActivity extends Activity implements MeteorCallback {
         if (updatedData != null) Log.i("CHANGED", updatedData);
         if (removedData != null) Log.i("CHANGED", removedData);
 
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
-
     }
 
     @Override
@@ -124,13 +107,7 @@ public class ShowsActivity extends Activity implements MeteorCallback {
         if (collection != null) Log.i("REMOVED", collection);
         if (_id != null) Log.i("REMOVED", _id);
 
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
-
+        adapter.removeItem(_id);
     }
 
     @Override

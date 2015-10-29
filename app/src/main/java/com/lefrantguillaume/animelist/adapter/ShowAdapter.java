@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.lefrantguillaume.animelist.R;
 import com.lefrantguillaume.animelist.model.ShowItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +24,18 @@ public class ShowAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<ShowItem> objects;
-    private final HashMap<String, ShowItem> itemHashMap;
+    private final HashMap<String, ShowItem> mMap;
     private LayoutInflater inflater = null;
+
+    public ShowAdapter(Context context) {
+        this(context, new HashMap<String, ShowItem>());
+    }
 
     public ShowAdapter(Context context, HashMap<String, ShowItem> objects) {
         this.context = context;
-        this.itemHashMap = objects;
-        this.objects = new ArrayList<>(objects.values());
+        this.objects = new ArrayList<>();
+        this.mMap = objects;
+        this.objects.addAll(objects.values());
         this.inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -47,21 +53,49 @@ public class ShowAdapter extends BaseAdapter {
             return null;
     }
 
+    public void addItem(String id, ShowItem item) {
+        mMap.put(id, item);
+        objects.clear();
+        objects.addAll(mMap.values());
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(String id) {
+        mMap.remove(id);
+        objects.clear();
+        objects.addAll(mMap.values());
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getItemId(int position) {
-        return objects.get(position).getCreatedAt().getTime();
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = inflater.inflate(R.layout.show_layout, parent, false);
+        View v = convertView;
+        ItemListViewHolder viewHolder;
 
-        TextView textView = (TextView) rowView.findViewById(R.id.label);
-
-        textView.setText(this.objects.get(position).toString());
-
-        return rowView;
+        if (convertView == null) {
+            v = inflater.inflate(R.layout.show_layout, parent, false);
+            viewHolder = new ItemListViewHolder(v);
+            v.setTag(viewHolder);
+        } else {
+            viewHolder = (ItemListViewHolder) v.getTag();
+        }
+        viewHolder.label.setText(this.objects.get(position).toString());
+        Picasso.with(context).load(this.objects.get(position).getPic()).into(viewHolder.image);
+        return v;
     }
 
+    class ItemListViewHolder {
+        public TextView label;
+        public ImageView image;
+        public ItemListViewHolder(View base) {
+            label = (TextView) base.findViewById(R.id.label);
+            image = (ImageView) base.findViewById(R.id.image);
+        }
+    }
 }
