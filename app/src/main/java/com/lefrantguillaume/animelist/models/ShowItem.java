@@ -1,26 +1,11 @@
-package com.lefrantguillaume.animelist.model;
+package com.lefrantguillaume.animelist.models;
 
 import java.util.Date;
 
 /**
- * Created by leniglo on 29/10/15.
- * <p/>
- * <p/>
- * {
- * "_id" : "FQ5c54ghBvPp8EYZb",
- * "name" : "test",
- * "status" : "To See",
- * "season" : "0",
- * "episode" : "0",
- * "owner" : "cCfYYyqpBSFHdMcjo",
- * "pic" : "/img/noPic.png",
- * "link" : "",
- * "createdAt" : "20150724021729",
- * "updatedAt" : "20150724021729"
- * }
+ * Created by leniglo on 10/11/15.
  */
 public class ShowItem {
-
     private final String _id;
     private final String name;
     private final String status;
@@ -47,7 +32,7 @@ public class ShowItem {
     }
 
     public String toString() {
-        return (this.name + " [" + this._id + "] S" + this.season + " E" + this.episode + ".");
+        return (this.name + " [" + this.status + "] S" + this.season + " E" + this.episode + ".");
     }
 
     public String getId() {
