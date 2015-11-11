@@ -52,6 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         Log.i("BindViewHolder", current.toString());
         if (current.getLink() != null && !current.getLink().isEmpty()) {
             holder.mButton.setClickable(true);
+            holder.mButton.setVisibility(View.VISIBLE);
             holder.mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -60,7 +61,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
                 }
             });
         } else {
-            holder.mButton.setClickable(true);
+            holder.mButton.setClickable(false);
             holder.mButton.setVisibility(View.INVISIBLE);
         }
     }

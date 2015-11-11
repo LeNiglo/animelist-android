@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("CYCLE1", "create");
         setContentView(R.layout.activity_login);
 
         mPrefs = getSharedPreferences(getString(R.string.preferences_file_key), MODE_PRIVATE);
@@ -94,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.e("CYCLE1", "start");
         showProgress(authTask = false);
 
         // Meteor instance
@@ -101,9 +103,6 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
             MeteorSingleton.createInstance(this, "ws://" + ROOT_URL + "/websocket");
         }
         MeteorSingleton.getInstance().setCallback(this);
-        if (MeteorSingleton.getInstance().isLoggedIn()) {
-            startAnimeList();
-        }
 
         String prefUsername = mPrefs.getString(getString(R.string.preferences_file_key) + ".username", null);
         String prefPassword = mPrefs.getString(getString(R.string.preferences_file_key) + ".password", null);
@@ -115,6 +114,37 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
             }
         }
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("CYCLE1", "restart");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("CYCLE1", "restart");
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("CYCLE1", "stop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.e("CYCLE1", "pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("CYCLE1", "destroy");
+        super.onDestroy();
     }
 
 
@@ -223,9 +253,9 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
     }
 
     private void startAnimeList() {
-        Intent intent = new Intent(getApplicationContext(), ShowsActivity.class);
         MeteorSingleton.getInstance().unsetCallback(LoginActivity.this);
-        startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), ShowsActivity.class);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -270,7 +300,17 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
 
     @Override
     public void onDisconnect(int i, String res) {
-        Log.e("WS", "Disconnected " + i + " // " + res);
+        showProgress(authTask = false);
+        Snackbar.make(mLoginFormView.getRootView(), res, Snackbar.LENGTH_INDEFINITE)
+                .setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        MeteorSingleton.getInstance().reconnect();
+                    }
+                })
+                .setActionTextColor(Color.RED)
+                .show();
+        Log.e("WS", "Disconnected // " + res);
     }
 
     @Override
@@ -288,7 +328,7 @@ public class LoginActivity extends AppCompatActivity implements MeteorCallback {
     @Override
     public void onException(Exception e) {
         Log.e("mException", e.getMessage());
-        Snackbar.make(mLoginFormView, e.getMessage(), Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(mLoginFormView.getRootView(), e.getMessage(), Snackbar.LENGTH_INDEFINITE)
                 .setAction("RETRY", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

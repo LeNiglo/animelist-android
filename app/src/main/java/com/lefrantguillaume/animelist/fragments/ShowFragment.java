@@ -101,7 +101,8 @@ public class ShowFragment extends Fragment {
     }
 
     public void removeFromDataset(String _id) {
-        this.mDataset.remove(_id);
+        if (this.mDataset.containsKey(_id))
+            this.mDataset.remove(_id);
     }
 
     public void clear() {

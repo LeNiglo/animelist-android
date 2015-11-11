@@ -21,6 +21,7 @@ import com.lefrantguillaume.animelist.models.ShowItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import im.delight.android.ddp.MeteorCallback;
@@ -35,6 +36,7 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
     private ShowsFragmentPagerAdapter pagerAdapter;
 
     public static String POSITION = "POSITION";
+    private static String[] allowedCollections = {"animes", "series"};
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -51,40 +53,73 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("CYCLE2", "create");
         setContentView(R.layout.activity_shows);
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        this.viewPager = (ViewPager) findViewById(R.id.viewpager);
-        this.pagerAdapter = new ShowsFragmentPagerAdapter(getSupportFragmentManager(),
-                ShowsActivity.this);
-        viewPager.setAdapter(pagerAdapter);
-
-        // Give the TabLayout the ViewPager
-        this.tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.e("CYCLE2", "start");
+
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        pagerAdapter = new ShowsFragmentPagerAdapter(getSupportFragmentManager(), ShowsActivity.this);
+        viewPager.setAdapter(pagerAdapter);
+        // Give the TabLayout the ViewPager
+        tabLayout.setupWithViewPager(viewPager);
+
         // Meteor instance
         MeteorSingleton.getInstance().setCallback(this);
         if (MeteorSingleton.getInstance().isLoggedIn()) {
             this.subscriptionId = MeteorSingleton.getInstance().subscribe("mylist");
         } else {
             Log.e("ShowsActivity", "Not LoggedIn !");
-            finish();
+            MeteorSingleton.getInstance().unsetCallback(this);
+            finishActivity(1);
         }
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("CYCLE2", "restart");
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("CYCLE2", "restart");
+    }
+
+    @Override
     protected void onStop() {
-        super.onStop();
+        Log.e("CYCLE2", "stop");
         MeteorSingleton.getInstance().unsetCallback(this);
-        MeteorSingleton.getInstance().logout();
-        if (pagerAdapter != null)
-            pagerAdapter.clear();
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.e("CYCLE2", "pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("CYCLE2", "destroy");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MeteorSingleton.getInstance().logout();
+                if (pagerAdapter != null)
+                    pagerAdapter.clear();
+            }
+        }).run();
+        super.onDestroy();
     }
 
     @Override
@@ -99,7 +134,9 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
 
     @Override
     public void onDataAdded(String collection, String _id, String data) {
-        if (collection != null) Log.i("ADDED", collection);
+        //if (collection != null) Log.i("ADDED", collection);
+        if (!Arrays.asList(allowedCollections).contains(collection))
+            return;
 
         try {
             JSONObject obj = new JSONObject(data);
@@ -120,8 +157,6 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
                     new Date()
             );
 
-            Log.i("SHOW", showItem.toString());
-
             assert collection != null;
             switch (collection) {
                 case "animes":
@@ -130,8 +165,6 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
                 case "series":
                     ((ShowFragment) this.pagerAdapter.getItem(1)).addToDataset(_id, showItem);
                     break;
-                default:
-                    throw new Exception("collection is invalid: " + collection, new Throwable());
             }
 
         } catch (Exception e) {
@@ -146,6 +179,8 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
         if (_id != null) Log.i("CHANGED", _id);
         if (updatedData != null) Log.i("CHANGED", updatedData);
         if (removedData != null) Log.i("CHANGED", removedData);
+        if (!Arrays.asList(allowedCollections).contains(collection))
+            return;
 
         try {
             assert collection != null;
@@ -156,8 +191,6 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
                 case "series":
                     ((ShowFragment) this.pagerAdapter.getItem(1)).updateDataset(_id);
                     break;
-                default:
-                    throw new Exception("collection is invalid: " + collection, new Throwable());
 
             }
         } catch (Exception e) {
@@ -169,6 +202,8 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
     public void onDataRemoved(String collection, String _id) {
         if (collection != null) Log.i("REMOVED", collection);
         if (_id != null) Log.i("REMOVED", _id);
+        if (!Arrays.asList(allowedCollections).contains(collection))
+            return;
 
         try {
             assert collection != null;
@@ -179,8 +214,6 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
                 case "series":
                     ((ShowFragment) this.pagerAdapter.getItem(1)).removeFromDataset(_id);
                     break;
-                default:
-                    throw new Exception("collection is invalid: " + collection, new Throwable());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,17 +246,18 @@ public class ShowsActivity extends AppCompatActivity implements MeteorCallback, 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                // Comportement du bouton "Refresh"
                 MeteorSingleton.getInstance().unsubscribe(subscriptionId, new UnsubscribeListener() {
                     @Override
                     public void onSuccess() {
                         pagerAdapter.clear();
+                        MeteorSingleton.getInstance().setCallback(ShowsActivity.this);
                         subscriptionId = MeteorSingleton.getInstance().subscribe("mylist");
                     }
                 });
                 return true;
             case R.id.action_sign_out:
                 MeteorSingleton.getInstance().logout();
+                pagerAdapter.clear();
                 finish();
                 return true;
             default:

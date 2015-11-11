@@ -53,5 +53,7 @@ public class ShowsFragmentPagerAdapter extends FragmentPagerAdapter {
             this.animesFragment.clear();
         if (this.seriesFragment != null)
             this.seriesFragment.clear();
+        this.animesFragment = ShowFragment.newInstance(context.getString(R.string.animes));
+        this.seriesFragment = ShowFragment.newInstance(context.getString(R.string.series));
     }
 }
