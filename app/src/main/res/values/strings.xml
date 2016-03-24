@@ -12,6 +12,7 @@
 
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_logout">Logout</string>
+    <string name="action_refresh">Refresh</string>
 
     <string name="nav_running">Running</string>
     <string name="nav_waiting">Waiting</string>

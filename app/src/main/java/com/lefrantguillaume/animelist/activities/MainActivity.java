@@ -63,13 +63,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Refresh list now ?", Snackbar.LENGTH_LONG)
-                        .setAction("YES", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                refreshData();
-                            }
-                        }).show();
+                // TODO ADD ITEM
             }
         });
 
@@ -172,13 +166,15 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
-        if (id == R.id.action_logout) {
-            SharedPreferences.Editor ed = sharedPreferences.edit();
-            ed.remove(SplashActivity.APP_NAME + ".token");
-            ed.apply();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+        switch (id) {
+            case R.id.action_logout:
+                logoutClient();
+                break;
+            case R.id.action_refresh:
+                refreshData();
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -204,6 +200,15 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    private void logoutClient() {
+        SharedPreferences.Editor ed = sharedPreferences.edit();
+        ed.remove(SplashActivity.APP_NAME + ".token");
+        ed.remove(SplashActivity.APP_NAME + ".tab");
+        ed.apply();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 
     private void resetMenuItems() {
