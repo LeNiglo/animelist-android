@@ -1,20 +1,22 @@
 <resources>
-    <string name="app_name">AnimeList</string>
-    <string name="preferences_file_key">com.lefrantguillaume.animelist</string>
+    <string name="app_name">My Animelist</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_username">Username</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="title_activity_login">Sign in</string>
+
+    <string name="prompt_email">Email or Username</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in</string>
-    <string name="action_remember_me">Remember me</string>
     <string name="error_field_required">This field is required</string>
-    <string name="error_meteor_connection">Trouble with Meteor connection</string>
 
-    <!-- Rest of app -->
-    <string name="animes">Animes</string>
-    <string name="series">Series</string>
-    <string name="show">Show</string>
-    <string name="action_refresh">Refresh</string>
-    <string name="season_episode">Season %1$d, Episode %2$d</string>
-    <string name="action_sign_out">Sign out</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="nav_running">Running</string>
+    <string name="nav_waiting">Waiting</string>
+    <string name="nav_tosee">To See</string>
+    <string name="nav_finished">Finished</string>
+    <string name="nav_animes">Animes</string>
+    <string name="nav_series">Series</string>
 </resources>

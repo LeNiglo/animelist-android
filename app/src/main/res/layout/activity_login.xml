@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".LoginActivity">
+    tools:context="com.lefrantguillaume.animelist.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -19,30 +19,48 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
+            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/app_name"
+                android:id="@+id/textView"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:layout_marginTop="32dp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
             <EditText
-                android:id="@+id/username"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_username"
-                android:inputType="text"
+                android:hint="@string/prompt_email"
+                android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:singleLine="true" />
 
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/password"
@@ -50,37 +68,21 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in"
+                android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
 
-        </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/email_sign_in_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_sign_in_short"
+                android:textStyle="bold" />
 
-        <CheckBox
-            android:id="@+id/remember_me"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_remember_me" />
-
-        <Button
-            android:id="@+id/username_sign_in_button"
-            style="?android:textAppearanceSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/action_sign_in"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="20dp"
-            android:src="@drawable/logo"
-            android:clickable="true"
-            android:paddingBottom="10dp" />
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
