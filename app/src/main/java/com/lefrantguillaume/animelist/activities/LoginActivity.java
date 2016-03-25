@@ -1,12 +1,10 @@
 package com.lefrantguillaume.animelist.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,11 +18,13 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
 
+import java.util.concurrent.CancellationException;
+
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
 
     // UI references.
     private EditText mEmailView;
@@ -131,6 +131,9 @@ public class LoginActivity extends Activity {
                                 if (error.contains("pass")) {
                                     mPasswordView.setError(error);
                                     mPasswordView.requestFocus();
+                                } else {
+                                    mEmailView.setError(error);
+                                    mEmailView.requestFocus();
                                 }
                             } else {
                                 SharedPreferences.Editor ed = sharedPreferences.edit();
@@ -152,8 +155,12 @@ public class LoginActivity extends Activity {
 
     @Override
     protected void onStop() {
+        try {
+            Ion.getDefault(this).cancelAll(this);
+        } catch (CancellationException e) {
+            e.printStackTrace();
+        }
         super.onStop();
-        Ion.getDefault(this).cancelAll(this);
     }
 }
 

@@ -1,30 +1,28 @@
 package com.lefrantguillaume.animelist.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.concurrent.CancellationException;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends AppCompatActivity {
 
     public static final String APP_NAME = "com.lefrantguillaume.animelist";
     public static final String ROOT_URL = "http://animelist.lefrantguillaume.com";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        SharedPreferences sharedPreferences = getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE);
         String username = sharedPreferences.getString(SplashActivity.APP_NAME + ".username", null);
         String token = sharedPreferences.getString(SplashActivity.APP_NAME + ".token", null);
 
@@ -43,18 +41,30 @@ public class SplashActivity extends Activity {
                             if (result != null && !result.equals("null")) {
                                 startActivity(new Intent(SplashActivity.this, MainActivity.class));
                             } else {
-                                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                clearAndLogin();
                             }
                         }
                     });
         } else {
-            startActivity(new Intent(this, LoginActivity.class));
+            clearAndLogin();
         }
+
+    }
+
+    private void clearAndLogin() {
+        SharedPreferences.Editor ed = sharedPreferences.edit();
+        ed.remove(SplashActivity.APP_NAME + ".token");
+        ed.apply();
+        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
     }
 
     @Override
     protected void onStop() {
+        try {
+            Ion.getDefault(this).cancelAll(this);
+        } catch (CancellationException e) {
+            e.printStackTrace();
+        }
         super.onStop();
-        Ion.getDefault(this).cancelAll(this);
     }
 }

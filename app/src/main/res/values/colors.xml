@@ -3,5 +3,7 @@
     <color name="colorPrimary">#5BC0DE</color>
     <color name="colorPrimaryDark">#38BBE2</color>
     <color name="colorPrimaryLight">#9AD0E0</color>
+    <color name="colorPrimaryInter">#805BC0DE</color>
+    <color name="colorPrimaryFaded">#115BC0DE</color>
     <color name="colorAccent">#00A200</color>
 </resources>

@@ -10,14 +10,20 @@
     <string name="prompt_password">Password</string>
     <string name="error_field_required">This field is required</string>
 
-    <string name="action_sign_in_short">Sign in</string>
     <string name="action_logout">Logout</string>
     <string name="action_refresh">Refresh</string>
 
-    <string name="nav_running">Running</string>
-    <string name="nav_waiting">Waiting</string>
-    <string name="nav_tosee">To See</string>
-    <string name="nav_finished">Finished</string>
-    <string name="nav_animes">Animes</string>
-    <string name="nav_series">Series</string>
+    <string name="title_animes">Animes</string>
+    <string name="title_series">Series</string>
+
+    <string name="status_running">Running</string>
+    <string name="status_waiting">Waiting</string>
+    <string name="status_tosee">To See</string>
+    <string name="status_finished">Finished</string>
+    <string-array name="status_entries">
+        <item>@string/status_running</item>
+        <item>@string/status_waiting</item>
+        <item>@string/status_tosee</item>
+        <item>@string/status_finished</item>
+    </string-array>
 </resources>

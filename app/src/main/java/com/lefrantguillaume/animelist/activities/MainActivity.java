@@ -4,21 +4,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -28,23 +26,26 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
+import com.lefrantguillaume.animelist.controllers.MyShowsAdapter;
 import com.lefrantguillaume.animelist.controllers.ShowsController;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private SharedPreferences sharedPreferences;
     private String authToken;
     private ShowsController showsController;
-    private ListView showsList;
     private NavigationView navigationView;
-    private ArrayAdapter<ShowModel> arrayAdapter;
+    private RecyclerView mRecyclerView;
+    private MyShowsAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +59,6 @@ public class MainActivity extends AppCompatActivity
         if (authToken == null) {
             finish();
         }
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO ADD ITEM
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -83,10 +76,11 @@ public class MainActivity extends AppCompatActivity
         headerUsername.setText(this.sharedPreferences.getString(SplashActivity.APP_NAME + ".username", "username"));
 
         showsController = new ShowsController();
-        showsList = (ListView) findViewById(R.id.shows_list);
-
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, showsController.getActiveList());
-        showsList.setAdapter(arrayAdapter);
+        mRecyclerView = (RecyclerView) findViewById(R.id.shows_list);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new MyShowsAdapter(showsController.getActiveList());
+        mRecyclerView.setAdapter(mAdapter);
         refreshData();
     }
 
@@ -102,6 +96,7 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         if (savedInstanceState != null) {
+            this.showsController.clear();
             List<ShowModel> showsParcel = savedInstanceState.getParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel");
             assert showsParcel != null;
             Log.i(MainActivity.class.getCanonicalName(), "RestoreInstance, shows: " + showsParcel.size());
@@ -109,9 +104,9 @@ public class MainActivity extends AppCompatActivity
                 this.showsController.addDocument(m);
             }
 
-            arrayAdapter.clear();
-            arrayAdapter.addAll(showsController.getActiveList());
-            arrayAdapter.notifyDataSetChanged();
+            mAdapter.clear();
+            mAdapter.setmDataset(showsController.getActiveList());
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -185,13 +180,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         resetMenuItems();
 
+        if (item == null)
+            return false;
+
         int id = item.getItemId();
         showsController.setActive(id);
         item.setChecked(true);
 
-        arrayAdapter.clear();
-        arrayAdapter.addAll(showsController.getActiveList());
-        arrayAdapter.notifyDataSetChanged();
+        mAdapter.clear();
+        mAdapter.setmDataset(showsController.getActiveList());
+        mAdapter.notifyDataSetChanged();
 
         SharedPreferences.Editor ed = this.sharedPreferences.edit();
         ed.putInt(SplashActivity.APP_NAME + ".tab", id);
@@ -222,8 +220,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
+        try {
+            Ion.getDefault(this).cancelAll(this);
+        } catch (CancellationException e) {
+            e.printStackTrace();
+        }
         super.onStop();
-        Ion.getDefault(this).cancelAll(this);
     }
 
 }

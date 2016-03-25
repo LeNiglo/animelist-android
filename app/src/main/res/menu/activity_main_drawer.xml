@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="@string/nav_animes">
+    <item android:title="@string/title_animes">
         <menu>
             <item
                 android:id="@+id/nav_animes_running"
                 android:icon="@drawable/ic_running"
-                android:title="@string/nav_running" />
+                android:title="@string/status_running" />
             <item
                 android:id="@+id/nav_animes_waiting"
                 android:icon="@drawable/ic_waiting"
-                android:title="@string/nav_waiting" />
+                android:title="@string/status_waiting" />
             <item
                 android:id="@+id/nav_animes_tosee"
                 android:icon="@drawable/ic_tosee"
-                android:title="@string/nav_tosee" />
+                android:title="@string/status_tosee" />
             <item
                 android:id="@+id/nav_animes_finished"
                 android:icon="@drawable/ic_finished"
-                android:title="@string/nav_finished" />
+                android:title="@string/status_finished" />
         </menu>
     </item>
 
-    <item android:title="@string/nav_series">
+    <item android:title="@string/title_series">
         <menu>
             <item
                 android:id="@+id/nav_series_running"
                 android:icon="@drawable/ic_running"
-                android:title="@string/nav_running" />
+                android:title="@string/status_running" />
             <item
                 android:id="@+id/nav_series_waiting"
                 android:icon="@drawable/ic_waiting"
-                android:title="@string/nav_waiting" />
+                android:title="@string/status_waiting" />
             <item
                 android:id="@+id/nav_series_tosee"
                 android:icon="@drawable/ic_tosee"
-                android:title="@string/nav_tosee" />
+                android:title="@string/status_tosee" />
             <item
                 android:id="@+id/nav_series_finished"
                 android:icon="@drawable/ic_finished"
-                android:title="@string/nav_finished" />
+                android:title="@string/status_finished" />
         </menu>
     </item>
 </menu>

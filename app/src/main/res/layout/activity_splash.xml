@@ -9,11 +9,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.lefrantguillaume.animelist.SplashActivity">
 
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:text="Loading ..."/>
+    <ProgressBar
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/splash_progress_bar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
