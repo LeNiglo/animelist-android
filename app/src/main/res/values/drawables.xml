@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <item name="ic_running" type="drawable">@drawable/ic_running</item>
     <item name="ic_waiting" type="drawable">@drawable/ic_waiting</item>
     <item name="ic_tosee" type="drawable">@drawable/ic_tosee</item>

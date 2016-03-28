@@ -3,6 +3,7 @@ package com.lefrantguillaume.animelist.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.lefrantguillaume.animelist.controllers.ShowFocusChangeListener;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
 import java.net.URISyntaxException;
+import java.util.concurrent.CancellationException;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -76,6 +78,9 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         if (!item.getLink().startsWith("http://") && !item.getLink().startsWith("https://")) {
+            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mFab.getLayoutParams();
+            p.setAnchorId(View.NO_ID);
+            mFab.setLayoutParams(p);
             mFab.setVisibility(View.GONE);
         } else {
             mFab.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +92,16 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onStop() {
+        try {
+            Ion.getDefault(this).cancelAll(this);
+        } catch (CancellationException e) {
+            e.printStackTrace();
+        }
+        super.onStop();
     }
 
 }

@@ -13,17 +13,28 @@ import java.util.List;
  */
 public class ShowsController {
 
-    private List<ShowModel> animesRunning;
-    private List<ShowModel> animesWaiting;
-    private List<ShowModel> animesTosee;
-    private List<ShowModel> animesFinished;
-    private List<ShowModel> seriesRunning;
-    private List<ShowModel> seriesWaiting;
-    private List<ShowModel> seriesTosee;
-    private List<ShowModel> seriesFinished;
+    private static ShowsController instance = null;
+    private static final String TAG = ShowsController.class.getName();
+
+    private final List<ShowModel> animesRunning;
+    private final List<ShowModel> animesWaiting;
+    private final List<ShowModel> animesTosee;
+    private final List<ShowModel> animesFinished;
+    private final List<ShowModel> seriesRunning;
+    private final List<ShowModel> seriesWaiting;
+    private final List<ShowModel> seriesTosee;
+    private final List<ShowModel> seriesFinished;
     private int active;
 
-    public ShowsController() {
+
+    public static ShowsController getInstance() {
+        if (instance == null) {
+            instance = new ShowsController();
+        }
+        return instance;
+    }
+
+    private ShowsController() {
         active = -1;
         animesRunning = new ArrayList<>();
         animesWaiting = new ArrayList<>();
@@ -80,24 +91,34 @@ public class ShowsController {
 
     public void addDocument(ShowModel showModel) {
         if (showModel.getType().equals("anime")) {
-            if (showModel.getStatus().equals("Running")) {
-                this.animesRunning.add(showModel);
-            } else if (showModel.getStatus().equals("Waiting")) {
-                this.animesWaiting.add(showModel);
-            } else if (showModel.getStatus().equals("To See")) {
-                this.animesTosee.add(showModel);
-            } else if (showModel.getStatus().equals("Finished")) {
-                this.animesFinished.add(showModel);
+            switch (showModel.getStatus()) {
+                case "Running":
+                    this.animesRunning.add(showModel);
+                    break;
+                case "Waiting":
+                    this.animesWaiting.add(showModel);
+                    break;
+                case "To See":
+                    this.animesTosee.add(showModel);
+                    break;
+                case "Finished":
+                    this.animesFinished.add(showModel);
+                    break;
             }
         } else if (showModel.getType().equals("serie")) {
-            if (showModel.getStatus().equals("Running")) {
-                this.seriesRunning.add(showModel);
-            } else if (showModel.getStatus().equals("Waiting")) {
-                this.seriesWaiting.add(showModel);
-            } else if (showModel.getStatus().equals("To See")) {
-                this.seriesTosee.add(showModel);
-            } else if (showModel.getStatus().equals("Finished")) {
-                this.seriesFinished.add(showModel);
+            switch (showModel.getStatus()) {
+                case "Running":
+                    this.seriesRunning.add(showModel);
+                    break;
+                case "Waiting":
+                    this.seriesWaiting.add(showModel);
+                    break;
+                case "To See":
+                    this.seriesTosee.add(showModel);
+                    break;
+                case "Finished":
+                    this.seriesFinished.add(showModel);
+                    break;
             }
         }
     }
@@ -112,4 +133,212 @@ public class ShowsController {
         seriesTosee.clear();
         seriesFinished.clear();
     }
+
+    public boolean changeItem(ShowModel item) {
+        if (item.getType().equals("anime")) {
+            for (int i1 = 0; i1 < animesRunning.size(); i1++) {
+                ShowModel i = animesRunning.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(0, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < animesWaiting.size(); i1++) {
+                ShowModel i = animesWaiting.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(1, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < animesTosee.size(); i1++) {
+                ShowModel i = animesTosee.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(2, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < animesFinished.size(); i1++) {
+                ShowModel i = animesFinished.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(3, i1, item);
+                }
+            }
+        } else if (item.getType().equals("serie")) {
+            for (int i1 = 0; i1 < seriesRunning.size(); i1++) {
+                ShowModel i = seriesRunning.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(4, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < seriesWaiting.size(); i1++) {
+                ShowModel i = seriesWaiting.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(5, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < seriesTosee.size(); i1++) {
+                ShowModel i = seriesTosee.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(6, i1, item);
+                }
+            }
+            for (int i1 = 0; i1 < seriesFinished.size(); i1++) {
+                ShowModel i = seriesFinished.get(i1);
+                if (i.getId().equals(item.getId())) {
+                    return compareAndUpdate(7, i1, item);
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean compareAndUpdate(int list, int position, ShowModel item) {
+        switch (list) {
+            case 0:
+                if (item.getStatus().equals("Running")) {
+                    this.animesRunning.set(position, item);
+                } else {
+                    this.animesRunning.remove(position);
+                    switch (item.getStatus()) {
+                        case "Waiting":
+                            this.animesWaiting.add(item);
+                            break;
+                        case "To See":
+                            this.animesTosee.add(item);
+                            break;
+                        case "Finished":
+                            this.animesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 1:
+                if (item.getStatus().equals("Waiting")) {
+                    this.animesWaiting.set(position, item);
+                } else {
+                    this.animesWaiting.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.animesRunning.add(item);
+                            break;
+                        case "To See":
+                            this.animesTosee.add(item);
+                            break;
+                        case "Finished":
+                            this.animesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 2:
+                if (item.getStatus().equals("To See")) {
+                    this.animesTosee.set(position, item);
+                } else {
+                    this.animesTosee.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.animesRunning.add(item);
+                            break;
+                        case "Waiting":
+                            this.animesWaiting.add(item);
+                            break;
+                        case "Finished":
+                            this.animesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 3:
+                if (item.getStatus().equals("Finished")) {
+                    this.animesFinished.set(position, item);
+                } else {
+                    this.animesFinished.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.animesRunning.add(item);
+                            break;
+                        case "Waiting":
+                            this.animesWaiting.add(item);
+                            break;
+                        case "To See":
+                            this.animesTosee.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 4:
+                if (item.getStatus().equals("Running")) {
+                    this.seriesRunning.set(position, item);
+                } else {
+                    this.seriesRunning.remove(position);
+                    switch (item.getStatus()) {
+                        case "Waiting":
+                            this.seriesWaiting.add(item);
+                            break;
+                        case "To See":
+                            this.seriesTosee.add(item);
+                            break;
+                        case "Finished":
+                            this.seriesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 5:
+                if (item.getStatus().equals("Waiting")) {
+                    this.seriesWaiting.set(position, item);
+                } else {
+                    this.seriesWaiting.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.seriesRunning.add(item);
+                            break;
+                        case "To See":
+                            this.seriesTosee.add(item);
+                            break;
+                        case "Finished":
+                            this.seriesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 6:
+                if (item.getStatus().equals("To See")) {
+                    this.seriesTosee.set(position, item);
+                } else {
+                    this.seriesTosee.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.seriesRunning.add(item);
+                            break;
+                        case "Waiting":
+                            this.seriesWaiting.add(item);
+                            break;
+                        case "Finished":
+                            this.seriesFinished.add(item);
+                            break;
+                    }
+                }
+                break;
+            case 7:
+                if (item.getStatus().equals("Finished")) {
+                    this.seriesFinished.set(position, item);
+                } else {
+                    this.seriesFinished.remove(position);
+                    switch (item.getStatus()) {
+                        case "Running":
+                            this.seriesRunning.add(item);
+                            break;
+                        case "Waiting":
+                            this.seriesWaiting.add(item);
+                            break;
+                        case "To See":
+                            this.seriesTosee.add(item);
+                            break;
+                    }
+                }
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
 }

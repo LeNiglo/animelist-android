@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="6dp"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:layout_margin="6dp">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <RelativeLayout
+        android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:id="@+id/topLayout"
-        android:clickable="true">
+        android:clickable="true"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textViewName"
@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/textViewSeasonEpisode"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -30,43 +31,46 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_gravity="right"/>
+            android:layout_gravity="right" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/bottomLayout">
+        android:visibility="gone">
 
 
         <Spinner
+            android:id="@+id/spinnerStatus"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/spinnerStatus"
-            android:entries="@array/status_entries"
-            android:paddingTop="6dp"
-            android:paddingRight="6dp"
-            android:layout_toStartOf="@+id/btnSeason"
+            android:layout_alignBottom="@+id/btnSeason"
             android:layout_alignTop="@+id/btnSeason"
-            android:layout_alignBottom="@+id/btnSeason" />
+            android:layout_toStartOf="@+id/btnSeason"
+            android:entries="@array/status_entries"
+            android:paddingRight="6dp"
+            android:paddingLeft="0dp"
+            android:paddingTop="6dp" />
 
         <ImageButton
+            android:id="@+id/btnEpisode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnEpisode"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/inc_season"
             android:src="@drawable/ic_action_add_item" />
 
         <ImageButton
+            android:id="@+id/btnSeason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnSeason"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/btnEpisode"
             android:backgroundTint="@color/colorPrimaryLight"
+            android:contentDescription="@string/inc_episode"
             android:src="@drawable/ic_action_add_item" />
 
 

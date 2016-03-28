@@ -26,7 +26,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
-import com.lefrantguillaume.animelist.controllers.MyShowsAdapter;
+import com.lefrantguillaume.animelist.controllers.ShowsAdapter;
 import com.lefrantguillaume.animelist.controllers.NetController;
 import com.lefrantguillaume.animelist.controllers.ShowsController;
 import com.lefrantguillaume.animelist.models.ShowModel;
@@ -41,12 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = MainActivity.class.getName();
 
     private SharedPreferences sharedPreferences;
-    private String authToken;
-    private ShowsController showsController;
     private NavigationView navigationView;
-    private RecyclerView mRecyclerView;
-    private MyShowsAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ShowsAdapter mAdapter;
 
 
     @Override
@@ -57,14 +53,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         this.sharedPreferences = getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE);
-        authToken = this.sharedPreferences.getString(SplashActivity.APP_NAME + ".token", null);
-        if (authToken == null) {
+        if (this.sharedPreferences.getString(SplashActivity.APP_NAME + ".token", null) == null) {
             finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -76,11 +71,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView headerUsername = (TextView) headerView.findViewById(R.id.header_username);
         headerUsername.setText(this.sharedPreferences.getString(SplashActivity.APP_NAME + ".username", "username"));
 
-        showsController = new ShowsController();
-        mRecyclerView = (RecyclerView) findViewById(R.id.shows_list);
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.shows_list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyShowsAdapter(this, showsController.getActiveList());
+        mAdapter = new ShowsAdapter(this, ShowsController.getInstance().getActiveList());
         mRecyclerView.setAdapter(mAdapter);
 
         if (savedInstanceState == null) {
@@ -89,8 +83,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel", (ArrayList<? extends Parcelable>) showsController.getAll());
+        savedInstanceState.putParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel", (ArrayList<? extends Parcelable>) ShowsController.getInstance().getAll());
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -102,14 +102,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState != null) {
             List<ShowModel> showsParcel = savedInstanceState.getParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel");
             if (showsParcel != null) {
-                this.showsController.clear();
+                ShowsController.getInstance().clear();
                 Log.i(TAG, "RestoreInstance, shows: " + showsParcel.size());
                 for (ShowModel m : showsParcel) {
-                    this.showsController.addDocument(m);
+                    ShowsController.getInstance().addDocument(m);
                 }
 
                 mAdapter.clear();
-                mAdapter.setmDataset(showsController.getActiveList());
+                mAdapter.setmDataset(ShowsController.getInstance().getActiveList());
                 mAdapter.notifyDataSetChanged();
 
                 MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void refreshData() {
 
-        showsController.clear();
-        FutureCallback cb = new FutureCallback<JsonObject>() {
+        ShowsController.getInstance().clear();
+        FutureCallback<JsonObject> cb = new FutureCallback<JsonObject>() {
             @Override
             public void onCompleted(Exception e, JsonObject result) {
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 JsonArray shows = result.getAsJsonArray("shows");
                 Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
                 for (int i = 0; i < shows.size(); i++) {
-                    showsController.addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                    ShowsController.getInstance().addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
                 }
 
                 MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
@@ -189,11 +189,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return false;
 
         int id = item.getItemId();
-        showsController.setActive(id);
+        ShowsController.getInstance().setActive(id);
         item.setChecked(true);
 
         mAdapter.clear();
-        mAdapter.setmDataset(showsController.getActiveList());
+        mAdapter.setmDataset(ShowsController.getInstance().getActiveList());
         mAdapter.notifyDataSetChanged();
 
         SharedPreferences.Editor ed = this.sharedPreferences.edit();
@@ -221,6 +221,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             navigationView.getMenu().getItem(i).setChecked(false);
         }
+    }
+
+    public ShowsAdapter getAdapter() {
+        return mAdapter;
     }
 
     @Override

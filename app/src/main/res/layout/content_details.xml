@@ -26,8 +26,9 @@
             android:id="@+id/edit_commentary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
             android:imeOptions="actionNext"
+            android:inputType="text"
+            android:labelFor="@string/commentary"
             android:nextFocusForward="@+id/edit_season"
             android:singleLine="true" />
 
@@ -40,8 +41,9 @@
             android:id="@+id/edit_season"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
             android:imeOptions="actionNext"
+            android:inputType="number"
+            android:labelFor="@string/season"
             android:nextFocusForward="@+id/edit_episode"
             android:singleLine="true" />
 
@@ -54,8 +56,9 @@
             android:id="@+id/edit_episode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
             android:imeOptions="actionNext"
+            android:inputType="number"
+            android:labelFor="@string/episode"
             android:nextFocusForward="@+id/edit_link"
             android:singleLine="true" />
 
@@ -68,8 +71,9 @@
             android:id="@+id/edit_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textUri"
             android:imeOptions="actionNext"
+            android:inputType="textUri"
+            android:labelFor="@string/link"
             android:nextFocusForward="@+id/edit_picture"
             android:singleLine="true" />
 
@@ -82,8 +86,9 @@
             android:id="@+id/edit_picture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textUri"
             android:imeOptions="actionDone"
+            android:inputType="textUri"
+            android:labelFor="@string/picture"
             android:singleLine="true" />
 
 

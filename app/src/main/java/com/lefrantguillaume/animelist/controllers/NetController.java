@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.lefrantguillaume.animelist.activities.MainActivity;
 import com.lefrantguillaume.animelist.activities.SplashActivity;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
@@ -31,8 +32,7 @@ public class NetController {
             throw new RuntimeException("Invalid argument. Expecting Integer or String.");
         }
 
-        Log.i(TAG, "Sending show changement " + parameter + "=" + value.toString());
-        new Exception().printStackTrace();
+        Log.i(TAG, "Sending show change: " + parameter + "=" + value.toString());
         Ion.with(activity)
                 .load("PATCH", SplashActivity.ROOT_URL + "/shows/" + item.getId())
                 .setHeader("Authorization", "Bearer " + token)
@@ -61,7 +61,7 @@ public class NetController {
         if (token == null)
             throw new RuntimeException("Unable to find Authentification token.");
 
-        Log.i(TAG, "Loading shows list.");
+        Log.w(TAG, "Loading shows list.");
         Ion.with(activity)
                 .load("GET", SplashActivity.ROOT_URL + "/publications/myShows")
                 .setHeader("Authorization", "Bearer " + token)

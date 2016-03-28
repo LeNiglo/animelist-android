@@ -25,6 +25,7 @@ import java.util.concurrent.CancellationException;
 /**
  * A login screen that offers login via email/password.
  */
+// TODO add a remember password checkbox and skip auth if password is remembered.
 public class LoginActivity extends AppCompatActivity {
 
     // UI references.
@@ -116,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                 authBody.addProperty("username", email);
             }
 
-            FutureCallback cb = new FutureCallback<JsonObject>() {
+            FutureCallback<JsonObject> cb = new FutureCallback<JsonObject>() {
                 @Override
                 public void onCompleted(Exception e, JsonObject result) {
 

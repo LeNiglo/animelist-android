@@ -10,15 +10,15 @@ import java.util.Date;
  */
 public class ShowModel implements Parcelable {
     private final String _id;
-    private final String name;
-    private final String commentary;
-    private final String status;
+    private String name;
+    private String commentary;
+    private String status;
     private final String type;
-    private final Integer season;
-    private final Integer episode;
+    private Integer season;
+    private Integer episode;
     private final String owner;
-    private final String pic;
-    private final String link;
+    private String pic;
+    private String link;
     private final Date createdAt;
     private final Date updatedAt;
 
@@ -168,6 +168,32 @@ public class ShowModel implements Parcelable {
                 return this.updatedAt.toString();
             default:
                 return null;
+        }
+    }
+
+    public void setParameter(String parameter, Object value) {
+        switch (parameter) {
+            case "name":
+                this.name = (String) value;
+                break;
+            case "commentary":
+                this.commentary = (String) value;
+                break;
+            case "status":
+                this.status = (String) value;
+                break;
+            case "season":
+                this.season = Integer.parseInt((String) value);
+                break;
+            case "episode":
+                this.episode = Integer.parseInt((String) value);
+                break;
+            case "pic":
+                this.pic = (String) value;
+                break;
+            case "link":
+                this.link = (String) value;
+                break;
         }
     }
 }

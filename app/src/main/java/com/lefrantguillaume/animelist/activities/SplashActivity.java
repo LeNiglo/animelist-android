@@ -37,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void ping() {
-        FutureCallback cb = new FutureCallback<String>() {
+        FutureCallback<String> cb = new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
                 if (e != null)

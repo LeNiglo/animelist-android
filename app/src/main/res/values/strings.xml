@@ -26,6 +26,8 @@
     <string name="season">Season</string>
     <string name="picture">Picture</string>
     <string name="link">Link</string>
+    <string name="inc_season">Inc Season</string>
+    <string name="inc_episode">Inc Episode</string>
 
     <string-array name="status_entries">
         <item>@string/status_running</item>
