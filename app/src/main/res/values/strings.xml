@@ -5,6 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_details">Details</string>
 
     <string name="prompt_email">Email or Username</string>
     <string name="prompt_password">Password</string>
@@ -20,10 +21,17 @@
     <string name="status_waiting">Waiting</string>
     <string name="status_tosee">To See</string>
     <string name="status_finished">Finished</string>
+    <string name="commentary">Commentary</string>
+    <string name="episode">Episode</string>
+    <string name="season">Season</string>
+    <string name="picture">Picture</string>
+    <string name="link">Link</string>
+
     <string-array name="status_entries">
         <item>@string/status_running</item>
         <item>@string/status_waiting</item>
         <item>@string/status_tosee</item>
         <item>@string/status_finished</item>
     </string-array>
+
 </resources>

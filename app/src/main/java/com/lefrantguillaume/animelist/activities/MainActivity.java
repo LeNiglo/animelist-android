@@ -27,6 +27,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
 import com.lefrantguillaume.animelist.controllers.MyShowsAdapter;
+import com.lefrantguillaume.animelist.controllers.NetController;
 import com.lefrantguillaume.animelist.controllers.ShowsController;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
@@ -35,8 +36,9 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = MainActivity.class.getName();
 
     private SharedPreferences sharedPreferences;
     private String authToken;
@@ -61,8 +63,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -79,9 +80,12 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView) findViewById(R.id.shows_list);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyShowsAdapter(showsController.getActiveList());
+        mAdapter = new MyShowsAdapter(this, showsController.getActiveList());
         mRecyclerView.setAdapter(mAdapter);
-        refreshData();
+
+        if (savedInstanceState == null) {
+            refreshData();
+        }
     }
 
     @Override
@@ -96,44 +100,45 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         if (savedInstanceState != null) {
-            this.showsController.clear();
             List<ShowModel> showsParcel = savedInstanceState.getParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel");
-            assert showsParcel != null;
-            Log.i(MainActivity.class.getCanonicalName(), "RestoreInstance, shows: " + showsParcel.size());
-            for (ShowModel m : showsParcel) {
-                this.showsController.addDocument(m);
-            }
+            if (showsParcel != null) {
+                this.showsController.clear();
+                Log.i(TAG, "RestoreInstance, shows: " + showsParcel.size());
+                for (ShowModel m : showsParcel) {
+                    this.showsController.addDocument(m);
+                }
 
-            mAdapter.clear();
-            mAdapter.setmDataset(showsController.getActiveList());
-            mAdapter.notifyDataSetChanged();
+                mAdapter.clear();
+                mAdapter.setmDataset(showsController.getActiveList());
+                mAdapter.notifyDataSetChanged();
+
+                MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
+                onNavigationItemSelected(menuItem);
+            }
         }
     }
 
-    protected void refreshData() {
+    public void refreshData() {
 
         showsController.clear();
-        Ion.with(this)
-                .load("GET", SplashActivity.ROOT_URL + "/publications/myShows")
-                .setHeader("Authorization", "Bearer " + authToken)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
+        FutureCallback cb = new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
 
-                        if (e != null)
-                            e.printStackTrace();
+                if (e != null)
+                    e.printStackTrace();
 
-                        JsonArray shows = result.getAsJsonArray("shows");
-                        Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
-                        for (int i = 0; i < shows.size(); i++) {
-                            showsController.addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
-                        }
+                JsonArray shows = result.getAsJsonArray("shows");
+                Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
+                for (int i = 0; i < shows.size(); i++) {
+                    showsController.addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                }
 
-                        MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
-                        onNavigationItemSelected(menuItem);
-                    }
-                });
+                MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
+                onNavigationItemSelected(menuItem);
+            }
+        };
+        NetController.loadShows(this, cb);
     }
 
 

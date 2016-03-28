@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
+import com.lefrantguillaume.animelist.controllers.NetController;
 
 import java.util.concurrent.CancellationException;
 
@@ -28,32 +29,35 @@ public class SplashActivity extends AppCompatActivity {
 
 
         if (username != null && token != null) {
-            Ion.with(this)
-                    .load("POST", SplashActivity.ROOT_URL + "/methods/ping")
-                    .setHeader("Authorization", "Bearer " + token)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            if (e != null)
-                                e.printStackTrace();
-
-                            if (result != null && !result.equals("null")) {
-                                startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                            } else {
-                                clearAndLogin();
-                            }
-                        }
-                    });
+            ping();
         } else {
             clearAndLogin();
         }
 
     }
 
+    private void ping() {
+        FutureCallback cb = new FutureCallback<String>() {
+            @Override
+            public void onCompleted(Exception e, String result) {
+                if (e != null)
+                    e.printStackTrace();
+
+                if (result != null && !result.equals("null")) {
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                } else {
+                    clearAndLogin();
+                }
+            }
+        };
+
+        NetController.ping(this, cb);
+    }
+
     private void clearAndLogin() {
         SharedPreferences.Editor ed = sharedPreferences.edit();
         ed.remove(SplashActivity.APP_NAME + ".token");
+        ed.remove(SplashActivity.APP_NAME + ".tab");
         ed.apply();
         startActivity(new Intent(SplashActivity.this, LoginActivity.class));
     }
@@ -63,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
         try {
             Ion.getDefault(this).cancelAll(this);
         } catch (CancellationException e) {
-            e.printStackTrace();
+            ping();
         }
         super.onStop();
     }

@@ -11,19 +11,21 @@ import java.util.Date;
 public class ShowModel implements Parcelable {
     private final String _id;
     private final String name;
+    private final String commentary;
     private final String status;
     private final String type;
-    private final int season;
-    private final int episode;
+    private final Integer season;
+    private final Integer episode;
     private final String owner;
     private final String pic;
     private final String link;
     private final Date createdAt;
     private final Date updatedAt;
 
-    public ShowModel(String id, String name, String status, String type, int season, int episode, String owner, String pic, String link, Date createdAt, Date updatedAt) {
+    public ShowModel(String id, String name, String commentary, String status, String type, int season, int episode, String owner, String pic, String link, Date createdAt, Date updatedAt) {
         this._id = id;
         this.name = name;
+        this.commentary = commentary;
         this.status = status;
         this.type = type;
         this.season = season;
@@ -47,6 +49,10 @@ public class ShowModel implements Parcelable {
         return name;
     }
 
+    public String getCommentary() {
+        return commentary;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -55,11 +61,11 @@ public class ShowModel implements Parcelable {
         return type;
     }
 
-    public int getSeason() {
+    public Integer getSeason() {
         return season;
     }
 
-    public int getEpisode() {
+    public Integer getEpisode() {
         return episode;
     }
 
@@ -86,6 +92,7 @@ public class ShowModel implements Parcelable {
     protected ShowModel(Parcel in) {
         _id = in.readString();
         name = in.readString();
+        commentary = in.readString();
         status = in.readString();
         type = in.readString();
         season = in.readInt();
@@ -108,6 +115,7 @@ public class ShowModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(_id);
         dest.writeString(name);
+        dest.writeString(commentary);
         dest.writeString(status);
         dest.writeString(type);
         dest.writeInt(season);
@@ -132,4 +140,34 @@ public class ShowModel implements Parcelable {
         }
     };
 
+    public String getParameter(String parameter) {
+        switch (parameter) {
+            case "_id":
+                return this._id;
+            case "name":
+                return this.name;
+            case "commentary":
+                return this.commentary;
+            case "status":
+                return this.status;
+            case "type":
+                return this.type;
+            case "season":
+                return this.season.toString();
+            case "episode":
+                return this.episode.toString();
+            case "owner":
+                return this.owner;
+            case "pic":
+                return this.pic;
+            case "link":
+                return this.link;
+            case "createdAt":
+                return this.createdAt.toString();
+            case "updatedAt":
+                return this.updatedAt.toString();
+            default:
+                return null;
+        }
+    }
 }

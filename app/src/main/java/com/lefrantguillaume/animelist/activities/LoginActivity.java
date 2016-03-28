@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
+import com.lefrantguillaume.animelist.controllers.NetController;
 
 import java.util.concurrent.CancellationException;
 
@@ -115,37 +116,35 @@ public class LoginActivity extends AppCompatActivity {
                 authBody.addProperty("username", email);
             }
 
-            Ion.with(this)
-                    .load("POST", SplashActivity.ROOT_URL + "/users/login")
-                    .setJsonObjectBody(authBody)
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
+            FutureCallback cb = new FutureCallback<JsonObject>() {
+                @Override
+                public void onCompleted(Exception e, JsonObject result) {
 
-                            if (e != null)
-                                e.printStackTrace();
+                    if (e != null)
+                        e.printStackTrace();
 
-                            if (result.has("error")) {
-                                String error = result.get("error").getAsString();
-                                if (error.contains("pass")) {
-                                    mPasswordView.setError(error);
-                                    mPasswordView.requestFocus();
-                                } else {
-                                    mEmailView.setError(error);
-                                    mEmailView.requestFocus();
-                                }
-                            } else {
-                                SharedPreferences.Editor ed = sharedPreferences.edit();
-                                ed.putString(SplashActivity.APP_NAME + ".username", email);
-                                ed.putString(SplashActivity.APP_NAME + ".token", result.get("token").getAsString());
-                                ed.apply();
-
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
-                            }
+                    if (result.has("error")) {
+                        String error = result.get("error").getAsString();
+                        if (error.contains("pass")) {
+                            mPasswordView.setError(error);
+                            mPasswordView.requestFocus();
+                        } else {
+                            mEmailView.setError(error);
+                            mEmailView.requestFocus();
                         }
-                    });
+                    } else {
+                        SharedPreferences.Editor ed = sharedPreferences.edit();
+                        ed.putString(SplashActivity.APP_NAME + ".username", email);
+                        ed.putString(SplashActivity.APP_NAME + ".token", result.get("token").getAsString());
+                        ed.apply();
+
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    }
+                }
+            };
+
+            NetController.login(this, authBody, cb);
         }
     }
 
