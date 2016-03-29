@@ -6,7 +6,6 @@ import android.util.Log;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.lefrantguillaume.animelist.activities.MainActivity;
 import com.lefrantguillaume.animelist.activities.SplashActivity;
 import com.lefrantguillaume.animelist.models.ShowModel;
 

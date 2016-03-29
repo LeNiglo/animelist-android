@@ -1,20 +1,14 @@
 package com.lefrantguillaume.animelist.controllers;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
-import com.lefrantguillaume.animelist.activities.MainActivity;
-import com.lefrantguillaume.animelist.activities.SplashActivity;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
 /**

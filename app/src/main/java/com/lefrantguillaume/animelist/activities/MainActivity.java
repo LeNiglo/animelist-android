@@ -1,23 +1,17 @@
 package com.lefrantguillaume.animelist.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatCallback;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,8 +26,8 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.lefrantguillaume.animelist.R;
-import com.lefrantguillaume.animelist.controllers.ShowsAdapter;
 import com.lefrantguillaume.animelist.controllers.NetController;
+import com.lefrantguillaume.animelist.controllers.ShowsAdapter;
 import com.lefrantguillaume.animelist.controllers.ShowsController;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
@@ -97,12 +91,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onResume() {
         super.onResume();
-        mAdapter.notifyDataSetChanged();
+        updateAdapter();
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel", (ArrayList<? extends Parcelable>) ShowsController.getInstance().getAll());
+        savedInstanceState.putParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel", (ArrayList<? extends Parcelable>) ShowsController.getInstance().getShows());
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -120,9 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ShowsController.getInstance().addDocument(m);
                 }
 
-                mAdapter.clear();
-                mAdapter.setmDataset(ShowsController.getInstance().getActiveList());
-                mAdapter.notifyDataSetChanged();
+                updateAdapter();
 
                 MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
                 onNavigationItemSelected(menuItem);
@@ -157,10 +149,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        if (drawer != null) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -204,9 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ShowsController.getInstance().setActive(id);
         item.setChecked(true);
 
-        mAdapter.clear();
-        mAdapter.setmDataset(ShowsController.getInstance().getActiveList());
-        mAdapter.notifyDataSetChanged();
+        updateAdapter();
 
         SharedPreferences.Editor ed = this.sharedPreferences.edit();
         ed.putInt(SplashActivity.APP_NAME + ".tab", id);
@@ -237,6 +229,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public ShowsAdapter getAdapter() {
         return mAdapter;
+    }
+
+    public void updateAdapter() {
+        mAdapter.clear();
+        mAdapter.setmDataset(ShowsController.getInstance().getActiveList());
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

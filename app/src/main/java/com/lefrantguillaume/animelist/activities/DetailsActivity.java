@@ -5,10 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,7 +16,6 @@ import com.lefrantguillaume.animelist.R;
 import com.lefrantguillaume.animelist.controllers.ShowFocusChangeListener;
 import com.lefrantguillaume.animelist.models.ShowModel;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.CancellationException;
 
 public class DetailsActivity extends AppCompatActivity {
