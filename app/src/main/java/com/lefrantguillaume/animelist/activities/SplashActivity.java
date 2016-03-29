@@ -1,5 +1,6 @@
 package com.lefrantguillaume.animelist.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +13,7 @@ import com.lefrantguillaume.animelist.controllers.NetController;
 
 import java.util.concurrent.CancellationException;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends Activity {
 
     public static final String APP_NAME = "com.lefrantguillaume.animelist";
     public static final String ROOT_URL = "http://animelist.lefrantguillaume.com";

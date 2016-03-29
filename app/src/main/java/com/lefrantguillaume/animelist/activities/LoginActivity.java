@@ -1,5 +1,6 @@
 package com.lefrantguillaume.animelist.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ import java.util.concurrent.CancellationException;
  * A login screen that offers login via email/password.
  */
 // TODO add a remember password checkbox and skip auth if password is remembered.
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
     // UI references.
     private EditText mEmailView;

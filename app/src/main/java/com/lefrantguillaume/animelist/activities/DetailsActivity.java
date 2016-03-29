@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import java.util.concurrent.CancellationException;
 public class DetailsActivity extends AppCompatActivity {
 
     private ShowModel item;
+    private EditText mEditName;
     private EditText mEditCommentary;
     private EditText mEditSeason;
     private EditText mEditEpisode;
@@ -44,6 +46,7 @@ public class DetailsActivity extends AppCompatActivity {
         item = getIntent().getParcelableExtra("ShowModel");
 
         mDetailsPicture = (ImageView) findViewById(R.id.details_picture);
+        mEditName = (EditText) findViewById(R.id.edit_name);
         mEditCommentary = (EditText) findViewById(R.id.edit_commentary);
         mEditSeason = (EditText) findViewById(R.id.edit_season);
         mEditEpisode = (EditText) findViewById(R.id.edit_episode);
@@ -55,6 +58,8 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void bind() {
+        mEditName.setText(item.getName());
+        mEditName.setOnFocusChangeListener(new ShowFocusChangeListener(this, item, "name"));
         mEditCommentary.setText(item.getCommentary());
         mEditCommentary.setOnFocusChangeListener(new ShowFocusChangeListener(this, item, "commentary"));
         mEditSeason.setText(String.format("%d", item.getSeason()));

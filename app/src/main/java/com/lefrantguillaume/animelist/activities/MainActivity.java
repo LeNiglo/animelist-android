@@ -1,17 +1,23 @@
 package com.lefrantguillaume.animelist.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatCallback;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,11 +65,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+        if (drawer != null) {
+            drawer.addDrawerListener(toggle);
+        }
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(this);
+        }
 
         View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
         navigationView.addHeaderView(headerView);
@@ -73,9 +83,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.shows_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ShowsAdapter(this, ShowsController.getInstance().getActiveList());
-        mRecyclerView.setAdapter(mAdapter);
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
         if (savedInstanceState == null) {
             refreshData();
@@ -103,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             List<ShowModel> showsParcel = savedInstanceState.getParcelableArrayList(SplashActivity.APP_NAME + ".showsParcel");
             if (showsParcel != null) {
                 ShowsController.getInstance().clear();
-                Log.i(TAG, "RestoreInstance, shows: " + showsParcel.size());
+                Log.i(TAG, "onRestoreInstanceState, shows: " + showsParcel.size());
                 for (ShowModel m : showsParcel) {
                     ShowsController.getInstance().addDocument(m);
                 }

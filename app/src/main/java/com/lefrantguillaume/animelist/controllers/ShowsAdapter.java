@@ -2,6 +2,7 @@ package com.lefrantguillaume.animelist.controllers;
 
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -95,7 +96,6 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
 
         final RelativeLayout bottom = holder.mBottomLayout;
         final RelativeLayout top = holder.mTopLayout;
-        // final View showName = holder.mTextViewName;
 
         switch (item.getStatus()) {
             case "Waiting":
@@ -114,6 +114,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
 
         holder.mTextViewName.setText(mDataset.get(position).getName());
         holder.mTextViewSeasonEpisode.setText(String.format("S%dE%d", item.getSeason(), item.getEpisode()));
+        holder.mBottomLayout.setVisibility(View.GONE);
 
         top.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +131,6 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
             public boolean onLongClick(View v) {
                 Intent intent = new Intent(activity, DetailsActivity.class);
                 intent.putExtra("ShowModel", item);
-                //TODO Activity Transition (slide right or shared element "showName")
                 activity.startActivity(intent);
                 return true;
             }
