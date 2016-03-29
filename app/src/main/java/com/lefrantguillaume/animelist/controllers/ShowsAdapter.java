@@ -2,7 +2,6 @@ package com.lefrantguillaume.animelist.controllers;
 
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -149,7 +148,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                             if (Integer.parseInt(result) > 0) {
                                 item.setParameter("season", String.valueOf(item.getSeason() + 1));
                                 ShowsController.getInstance().changeItem(item);
-                                ((MainActivity) activity).getAdapter().notifyDataSetChanged();
+                                ((MainActivity) activity).updateAdapter();
                             } else {
                                 Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
                             }
@@ -174,7 +173,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                             if (Integer.parseInt(result) > 0) {
                                 item.setParameter("episode", String.valueOf(item.getEpisode() + 1));
                                 ShowsController.getInstance().changeItem(item);
-                                ((MainActivity) activity).getAdapter().notifyDataSetChanged();
+                                ((MainActivity) activity).updateAdapter();
                             } else {
                                 Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
                             }
@@ -201,7 +200,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                                 if (Integer.parseInt(result) > 0) {
                                     item.setParameter("status", newStatus);
                                     ShowsController.getInstance().changeItem(item);
-                                    ((MainActivity) activity).getAdapter().notifyDataSetChanged();
+                                    ((MainActivity) activity).updateAdapter();
                                 } else {
                                     Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
                                 }
