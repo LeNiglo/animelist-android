@@ -2,9 +2,11 @@ package com.lefrantguillaume.animelist.controllers;
 
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,19 +143,20 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                 NetController.sendChangement(activity, item, "season", item.getSeason() + 1, new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String result) {
-                        if (e != null)
+                        if (e != null) {
                             e.printStackTrace();
-
-                        try {
-                            if (Integer.parseInt(result) > 0) {
-                                item.setParameter("season", String.valueOf(item.getSeason() + 1));
-                                ShowsController.getInstance().changeItem(item);
-                                ((MainActivity) activity).updateAdapter();
-                            } else {
-                                Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            try {
+                                if (Integer.parseInt(result) > 0) {
+                                    item.setParameter("season", String.valueOf(item.getSeason() + 1));
+                                    ShowsController.getInstance().changeItem(item);
+                                    ((MainActivity) activity).updateAdapter();
+                                } else {
+                                    Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                                }
+                            } catch (NumberFormatException ex) {
+                                ex.printStackTrace();
                             }
-                        } catch (NumberFormatException ex) {
-                            ex.printStackTrace();
                         }
                     }
                 });
@@ -166,19 +169,20 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                 NetController.sendChangement(activity, item, "episode", item.getEpisode() + 1, new FutureCallback<String>() {
                     @Override
                     public void onCompleted(Exception e, String result) {
-                        if (e != null)
+                        if (e != null) {
                             e.printStackTrace();
-
-                        try {
-                            if (Integer.parseInt(result) > 0) {
-                                item.setParameter("episode", String.valueOf(item.getEpisode() + 1));
-                                ShowsController.getInstance().changeItem(item);
-                                ((MainActivity) activity).updateAdapter();
-                            } else {
-                                Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            try {
+                                if (Integer.parseInt(result) > 0) {
+                                    item.setParameter("episode", String.valueOf(item.getEpisode() + 1));
+                                    ShowsController.getInstance().changeItem(item);
+                                    ((MainActivity) activity).updateAdapter();
+                                } else {
+                                    Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                                }
+                            } catch (NumberFormatException ex) {
+                                ex.printStackTrace();
                             }
-                        } catch (NumberFormatException ex) {
-                            ex.printStackTrace();
                         }
                     }
                 });
@@ -193,19 +197,20 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder> 
                     NetController.sendChangement(activity, item, "status", newStatus, new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            if (e != null)
+                            if (e != null) {
                                 e.printStackTrace();
-
-                            try {
-                                if (Integer.parseInt(result) > 0) {
-                                    item.setParameter("status", newStatus);
-                                    ShowsController.getInstance().changeItem(item);
-                                    ((MainActivity) activity).updateAdapter();
-                                } else {
-                                    Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                try {
+                                    if (Integer.parseInt(result) > 0) {
+                                        item.setParameter("status", newStatus);
+                                        ShowsController.getInstance().changeItem(item);
+                                        ((MainActivity) activity).updateAdapter();
+                                    } else {
+                                        Snackbar.make(activity.findViewById(R.id.shows_list), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    ex.printStackTrace();
                                 }
-                            } catch (NumberFormatException ex) {
-                                ex.printStackTrace();
                             }
                         }
                     });

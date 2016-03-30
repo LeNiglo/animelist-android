@@ -40,13 +40,15 @@ public class SplashActivity extends Activity {
         FutureCallback<String> cb = new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                if (e != null)
+                if (e != null) {
                     e.printStackTrace();
-
-                if (result != null && !result.equals("null")) {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    // TODO Offline Mode here ?
                 } else {
-                    clearAndLogin();
+                    if (result != null && !result.equals("null")) {
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    } else {
+                        clearAndLogin();
+                    }
                 }
             }
         };
@@ -71,4 +73,5 @@ public class SplashActivity extends Activity {
         }
         super.onStop();
     }
+
 }

@@ -18,6 +18,9 @@ import com.lefrantguillaume.animelist.models.ShowModel;
 
 import java.util.concurrent.CancellationException;
 
+/**
+ *
+ */
 public class DetailsActivity extends AppCompatActivity {
 
     private ShowModel item;
@@ -74,9 +77,9 @@ public class DetailsActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(item.getName());
 
         if (!item.getPic().startsWith("http://") && !item.getPic().startsWith("https://")) {
-            Ion.with(mDetailsPicture).error(R.drawable.ic_tosee).load(SplashActivity.ROOT_URL + item.getPic());
+            Ion.with(mDetailsPicture).load(SplashActivity.ROOT_URL + item.getPic());
         } else {
-            Ion.with(mDetailsPicture).error(R.drawable.ic_tosee).load(item.getPic());
+            Ion.with(mDetailsPicture).load(item.getPic());
         }
 
         if (!item.getLink().startsWith("http://") && !item.getLink().startsWith("https://")) {

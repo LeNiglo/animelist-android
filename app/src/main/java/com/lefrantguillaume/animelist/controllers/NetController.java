@@ -1,6 +1,9 @@
 package com.lefrantguillaume.animelist.controllers;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -11,10 +14,18 @@ import com.lefrantguillaume.animelist.models.ShowModel;
 
 /**
  * Created by leniglo on 28/03/16.
+ *
+ * This Controller manages all networks calls done to the API using Ion and GSON.
  */
 public class NetController {
 
     private static final String TAG = NetController.class.getName();
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     public static void sendChangement(Activity activity, ShowModel item, String parameter, Object value, FutureCallback<String> cb) throws RuntimeException {
         String token = activity.getSharedPreferences(SplashActivity.APP_NAME, Activity.MODE_PRIVATE).getString(SplashActivity.APP_NAME + ".token", null);

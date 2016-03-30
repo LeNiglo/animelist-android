@@ -129,13 +129,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onCompleted(Exception e, JsonObject result) {
 
-                if (e != null)
+                if (e != null) {
                     e.printStackTrace();
-
-                JsonArray shows = result.getAsJsonArray("shows");
-                Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
-                for (int i = 0; i < shows.size(); i++) {
-                    ShowsController.getInstance().addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                } else {
+                    JsonArray shows = result.getAsJsonArray("shows");
+                    Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
+                    for (int i = 0; i < shows.size(); i++) {
+                        ShowsController.getInstance().addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                    }
                 }
 
                 MenuItem menuItem = navigationView.getMenu().findItem(sharedPreferences.getInt(SplashActivity.APP_NAME + ".tab", R.id.nav_animes_running));
@@ -204,16 +205,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ed.putInt(SplashActivity.APP_NAME + ".tab", id);
         ed.apply();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
 
         return true;
     }
 
     private void logoutClient() {
-        SharedPreferences.Editor ed = sharedPreferences.edit();
-        ed.remove(SplashActivity.APP_NAME + ".token");
-        ed.remove(SplashActivity.APP_NAME + ".tab");
-        ed.apply();
+        LoginActivity.logout(this);
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

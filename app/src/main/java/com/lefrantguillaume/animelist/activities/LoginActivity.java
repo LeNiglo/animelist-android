@@ -1,8 +1,10 @@
 package com.lefrantguillaume.animelist.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,12 +28,12 @@ import java.util.concurrent.CancellationException;
 /**
  * A login screen that offers login via email/password.
  */
-// TODO add a remember password checkbox and skip auth if password is remembered.
 public class LoginActivity extends Activity {
 
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+    private CheckBox mRememberMe;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -40,8 +43,9 @@ public class LoginActivity extends Activity {
         // Set up the login form.
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
+        mRememberMe = (CheckBox) findViewById(R.id.checkbox_remember_me);
 
-        this.sharedPreferences = getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -62,12 +66,36 @@ public class LoginActivity extends Activity {
             }
         });
 
+        TextView mRegisterOnline = (TextView) findViewById(R.id.register_online);
+        if (!NetController.isNetworkAvailable(this)) {
+            mRegisterOnline.setClickable(false);
+            mRegisterOnline.setVisibility(View.GONE);
+        } else {
+            mRegisterOnline.setClickable(true);
+            mRegisterOnline.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(SplashActivity.ROOT_URL + "/register")));
+                }
+            });
+        }
+
         String prefUsername = this.sharedPreferences.getString(SplashActivity.APP_NAME + ".username", null);
+        String prefPassword = this.sharedPreferences.getString(SplashActivity.APP_NAME + ".password", null);
+        Boolean prefRemember = this.sharedPreferences.getBoolean(SplashActivity.APP_NAME + ".remember", false);
+
+        mRememberMe.setChecked(prefRemember);
+
         if (prefUsername != null) {
             mEmailView.setText(prefUsername);
             mPasswordView.requestFocus();
         } else {
             mEmailView.requestFocus();
+        }
+
+        if (prefPassword != null) {
+            mPasswordView.setText(prefPassword);
+            attemptLogin();
         }
 
     }
@@ -121,26 +149,34 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onCompleted(Exception e, JsonObject result) {
 
-                    if (e != null)
+                    if (e != null) {
                         e.printStackTrace();
-
-                    if (result.has("error")) {
-                        String error = result.get("error").getAsString();
-                        if (error.contains("pass")) {
-                            mPasswordView.setError(error);
-                            mPasswordView.requestFocus();
-                        } else {
-                            mEmailView.setError(error);
-                            mEmailView.requestFocus();
-                        }
                     } else {
-                        SharedPreferences.Editor ed = sharedPreferences.edit();
-                        ed.putString(SplashActivity.APP_NAME + ".username", email);
-                        ed.putString(SplashActivity.APP_NAME + ".token", result.get("token").getAsString());
-                        ed.apply();
+                        if (result.has("error")) {
+                            String error = result.get("error").getAsString();
+                            if (error.contains("pass")) {
+                                mPasswordView.setError(error);
+                                mPasswordView.requestFocus();
+                            } else {
+                                mEmailView.setError(error);
+                                mEmailView.requestFocus();
+                            }
+                        } else {
+                            SharedPreferences.Editor ed = sharedPreferences.edit();
+                            ed.putString(SplashActivity.APP_NAME + ".username", email);
+                            if (mRememberMe.isChecked()) {
+                                ed.putString(SplashActivity.APP_NAME + ".password", password);
+                                ed.putBoolean(SplashActivity.APP_NAME + ".remember", true);
+                            } else {
+                                ed.remove(SplashActivity.APP_NAME + ".password");
+                                ed.remove(SplashActivity.APP_NAME + ".remember");
+                            }
+                            ed.putString(SplashActivity.APP_NAME + ".token", result.get("token").getAsString());
+                            ed.apply();
 
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        }
                     }
                 }
             };
@@ -161,6 +197,15 @@ public class LoginActivity extends Activity {
             e.printStackTrace();
         }
         super.onStop();
+    }
+
+    public static void logout(Context context) {
+        SharedPreferences.Editor ed = context.getSharedPreferences(SplashActivity.APP_NAME, MODE_PRIVATE).edit();
+        ed.remove(SplashActivity.APP_NAME + ".token");
+        ed.remove(SplashActivity.APP_NAME + ".password");
+        ed.remove(SplashActivity.APP_NAME + ".remember");
+        ed.remove(SplashActivity.APP_NAME + ".tab");
+        ed.apply();
     }
 }
 

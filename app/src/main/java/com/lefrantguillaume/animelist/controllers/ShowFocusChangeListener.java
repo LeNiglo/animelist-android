@@ -43,18 +43,19 @@ public class ShowFocusChangeListener implements View.OnFocusChangeListener {
         FutureCallback<String> cb = new FutureCallback<String>() {
             @Override
             public void onCompleted(Exception e, String result) {
-                if (e != null)
+                if (e != null) {
                     e.printStackTrace();
-
-                try {
-                    if (Integer.parseInt(result) > 0) {
-                        item.setParameter(parameter, value);
-                        ShowsController.getInstance().changeItem(item);
-                    } else {
-                        Snackbar.make(activity.findViewById(R.id.app_bar), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                } else {
+                    try {
+                        if (Integer.parseInt(result) > 0) {
+                            item.setParameter(parameter, value);
+                            ShowsController.getInstance().changeItem(item);
+                        } else {
+                            Snackbar.make(activity.findViewById(R.id.app_bar), "Error while updating item.", Snackbar.LENGTH_LONG).show();
+                        }
+                    } catch (NumberFormatException ex) {
+                        ex.printStackTrace();
                     }
-                } catch (NumberFormatException ex) {
-                    ex.printStackTrace();
                 }
             }
         };

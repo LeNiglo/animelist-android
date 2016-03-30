@@ -29,6 +29,8 @@
     <string name="inc_season">Inc Season</string>
     <string name="inc_episode">Inc Episode</string>
     <string name="name">Name</string>
+    <string name="remember_me">Remember me</string>
+    <string name="register_online">Register Online</string>
 
     <string-array name="status_entries">
         <item>@string/status_running</item>
