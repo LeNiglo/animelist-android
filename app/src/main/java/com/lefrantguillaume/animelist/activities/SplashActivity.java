@@ -15,7 +15,7 @@ import java.util.concurrent.CancellationException;
 public class SplashActivity extends Activity {
 
     public static final String APP_NAME = "com.lefrantguillaume.animelist";
-    public static final String ROOT_URL = "http://animelist.lefrantguillaume.com";
+    public static final String ROOT_URL = "https://animelist.lefrantguillaume.com";
     private SharedPreferences sharedPreferences;
 
     @Override

@@ -134,8 +134,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     JsonArray shows = result.getAsJsonArray("shows");
                     Gson gSon = new GsonBuilder().setDateFormat("yyyyMMddHHmmss").create();
-                    for (int i = 0; i < shows.size(); i++) {
-                        ShowsController.getInstance().addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                    if (shows != null) {
+                        for (int i = 0; i < shows.size(); i++) {
+                            ShowsController.getInstance().addDocument(gSon.fromJson(shows.get(i).getAsJsonObject(), ShowModel.class));
+                        }
                     }
                 }
 
